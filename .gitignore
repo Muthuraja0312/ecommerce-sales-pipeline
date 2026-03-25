@@ -1,0 +1,19 @@
+# data files
+data/raw/
+data/bronze/
+data/silver/
+data/gold/
+data/quarantine/
+
+# logs
+logs/
+
+# python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# environment
+.env
