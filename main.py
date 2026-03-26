@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 from src.utils.spark_session import get_spark_session
 from src.ingestion.ingest_raw import ingest_data
 from src.transformation.clean_orders import clean_orders_data
+from src.transformation.enrich_orders import enrich_order
 
 if __name__ == "__main__":
     
@@ -46,8 +47,13 @@ if __name__ == "__main__":
             if len(parquet_files) != 0:
                 clean_orders_data(spark, bronze_file_path, silver_file_path,quarantine_file_path)
                 logger.info("order data cleaning done")
+                logger.info("enrich order started")
+                enrich_order(spark, bronze_file_path, silver_file_path)
+                logger.info("enrich order done")
+            
     except Exception as e:
         logger.error(f"Error : {e}")
+        
     finally:
         if 'spark' in locals():
             spark.stop()
