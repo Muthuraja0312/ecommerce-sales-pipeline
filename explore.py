@@ -50,4 +50,9 @@ conn.sql("DESCRIBE SELECT * FROM read_parquet('data/bronze/olist_products_datase
 # LIMIT 5").show()
 
 conn.sql("select * from read_parquet('data/bronze/olist_order_payments_dataset/*.parquet') limit 5").show()
-conn.sql("select order_id, sum(payment_value) as total_payment from read_parquet('data/bronze/olist_order_payments_dataset/*.parquet') group by order_id").show()
+# conn.sql("select order_id, sum(payment_value) as total_payment from read_parquet('data/bronze/olist_order_payments_dataset/*.parquet') group by order_id").show()
+
+conn.sql("select count(*) as total_count, count(order_id) as order_count from read_parquet('data/bronze/olist_orders_dataset/*.parquet')").show()
+conn.sql("select count(*) as total_count, count(order_id) as order_count from read_parquet('data/bronze/olist_order_items_dataset/*.parquet')").show()
+
+conn.sql("select sum(total_count) from(select count(*) as total_count, count(order_id) as order_count from read_parquet('data/bronze/olist_order_items_dataset/*.parquet') group by order_id having count('order_id')>1)").show()
