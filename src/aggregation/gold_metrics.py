@@ -91,7 +91,7 @@ def calculate_top_products_categories(spark, bronze_path, gold_path):
 
         final_df = order_items_df.alias("o").join(products_df.alias("p"),col("o.product_id") == col("p.product_id"), "left").join(product_category_df.alias("c"), col("p.product_category_name") == col("c.product_category_name"), "left")\
             .select(col("o.order_id").alias("order_id"), col("p.product_id").alias("product_id"), col("o.price").alias("price"), col("o.freight_value").alias("freight_value"), col("p.product_category_name").alias("product_category_name"), col("c.product_category_name_english").alias("product_category_name_english"))
-        final_df = final_df.groupBy("product_category_name_english").agg(round(spark_sum(coalesce(col("price"), lit(0))+coalesce(col("freight_value"), lit(0))),2).alias("total_revenue_per_category")).sort(col("total_revenue_per_category").desc()).limit(10)
+        final_df = final_df.groupBy("product_category_name_english").agg(round(spark_sum(coalesce(col("price"), lit(0))+coalesce(col("freight_value"), lit(0))),2).alias("total_revenue_per_category"))
         final_df.write.mode("overwrite").parquet(str(gold_path/"top_product_category"))
         logger.info(f"{final_df.count()} rows written to {str(gold_path/"top_product_category")}")
 
